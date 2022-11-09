@@ -14,16 +14,27 @@ import java.util.Set;
 @Data
 @Getter @Setter
 public class Boleto {
+    public Boleto(){}
     @Id
     private Long nosso_numero;
-
+/*
     @ManyToOne
     @JoinColumn(name = "beneficiario_id")
     private Beneficiario beneficiario;
-
-    private Long numero_documento;
+*/
+    private String numero_documento;
     private LocalDateTime data_vencimento;
     private LocalDateTime data_movimento;
-    private BigDecimal valor;
+    private String valor;
     private String  linha_digitavel;
+
+    public Boleto(Long nosso_numero, String numero_documento, String valor) {
+        this.nosso_numero = nosso_numero;
+        this.numero_documento = numero_documento;
+        this.valor = valor;
+    }
+
+    public Long getNosso_numero() {
+        return nosso_numero;
+    }
 }

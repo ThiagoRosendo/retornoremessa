@@ -11,6 +11,11 @@ import java.util.Set;
 @Data
 @Getter @Setter
 public class Pagador {
+    public Pagador(){}
+    @Id
+    private Long id;
+}
+/*
     @Id
     @OneToOne
     @JoinColumn(name = "boleto_id_pagador")
@@ -18,3 +23,5 @@ public class Pagador {
     private Long conta;
     private Long carteira;
 }
+
+ */

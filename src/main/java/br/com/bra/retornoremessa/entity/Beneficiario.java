@@ -11,11 +11,16 @@ import java.util.Set;
 @Data
 @Getter @Setter
 public class Beneficiario {
+
+    public Beneficiario() {
+    }
+
     @Id
     private String cnpj;
-
+}
+/*
     @OneToMany(mappedBy = "id_beneficiario")
-    private Set<Boleto> boleto;
+   private Set<Boleto> boleto;
 
     private String nome;
     private Long agencia;
@@ -23,3 +28,5 @@ public class Beneficiario {
     private Long carteira;
     private Long contrato;
 }
+
+*/

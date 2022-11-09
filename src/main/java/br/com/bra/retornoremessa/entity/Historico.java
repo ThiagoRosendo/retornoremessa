@@ -13,6 +13,14 @@ import java.util.Set;
 @Data
 @Getter @Setter
 public class Historico {
+    public Historico(){}
+
+    @Id
+    private Long id;
+}
+
+
+/*
     @Id
     @ManyToOne
     @JoinColumn(name = "boleto_id_hist")
@@ -21,4 +29,4 @@ public class Historico {
     private String status;
     private String descricao;
     private LocalDateTime data;
-}
+}*/
