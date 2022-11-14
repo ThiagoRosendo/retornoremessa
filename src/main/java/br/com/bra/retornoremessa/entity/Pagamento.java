@@ -9,20 +9,17 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
 @Getter @Setter
 public class Pagamento {
     public Pagamento(){}
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-}
-/*
-    @Id
+
     @ManyToOne
-    @JoinColumn(name = "boleto_id_pgto")
+    @JoinColumn (name = "boleto_id", nullable = false)
     private Boleto boleto;
 
     private LocalDateTime data_pagamento;
     private BigDecimal valor;
 }
-*/

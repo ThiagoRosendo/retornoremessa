@@ -11,17 +11,27 @@ import java.util.Set;
 
 
 @Entity
-@Data
 @Getter @Setter
 public class Boleto {
-    public Boleto(){}
     @Id
     private Long nosso_numero;
-/*
+
+    @OneToOne (mappedBy = "boleto", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Pagador pagador;
+
     @ManyToOne
-    @JoinColumn(name = "beneficiario_id")
+    @JoinColumn (name = "beneficiario_id", nullable = false)
     private Beneficiario beneficiario;
-*/
+
+    @OneToMany(mappedBy = "boleto")
+    private Set<Pagamento> pagamento;
+
+    @OneToMany(mappedBy = "boleto")
+    private Set<Historico> historico;
+
+    public Boleto(){}
+
     private String numero_documento;
     private LocalDateTime data_vencimento;
     private LocalDateTime data_movimento;

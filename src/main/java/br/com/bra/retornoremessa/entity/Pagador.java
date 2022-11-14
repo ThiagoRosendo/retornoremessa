@@ -8,20 +8,18 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
 @Getter @Setter
 public class Pagador {
     public Pagador(){}
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-}
-/*
-    @Id
+
     @OneToOne
-    @JoinColumn(name = "boleto_id_pagador")
+    @MapsId
+    @JoinColumn(name = "boleto_id")
     private Boleto boleto;
+
     private Long conta;
     private Long carteira;
 }
-
- */

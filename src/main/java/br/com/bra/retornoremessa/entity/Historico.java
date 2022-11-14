@@ -10,23 +10,19 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Data
 @Getter @Setter
 public class Historico {
     public Historico(){}
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-}
 
-
-/*
-    @Id
     @ManyToOne
-    @JoinColumn(name = "boleto_id_hist")
+    @JoinColumn (name = "boleto_id", nullable = false)
     private Boleto boleto;
 
     private String status;
     private String descricao;
     private LocalDateTime data;
-}*/
+}

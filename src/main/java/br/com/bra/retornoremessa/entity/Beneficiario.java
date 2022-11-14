@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
 @Getter @Setter
 public class Beneficiario {
 
@@ -17,10 +16,9 @@ public class Beneficiario {
 
     @Id
     private String cnpj;
-}
-/*
-    @OneToMany(mappedBy = "id_beneficiario")
-   private Set<Boleto> boleto;
+
+    @OneToMany(mappedBy = "beneficiario")
+    private Set<Boleto> boletos;
 
     private String nome;
     private Long agencia;
@@ -28,5 +26,3 @@ public class Beneficiario {
     private Long carteira;
     private Long contrato;
 }
-
-*/
