@@ -21,7 +21,7 @@ public class Boleto {
     private Pagador pagador;
 
     @ManyToOne
-    @JoinColumn (name = "beneficiario_id", nullable = false)
+    @JoinColumn (name = "beneficiario_id", nullable = true)
     private Beneficiario beneficiario;
 
     @OneToMany(mappedBy = "boleto")
