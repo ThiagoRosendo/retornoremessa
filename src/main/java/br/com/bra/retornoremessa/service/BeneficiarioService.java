@@ -17,12 +17,26 @@ public class BeneficiarioService{
         return beneficiarioRepository.save(beneficiario);
     }
 
-    public Beneficiario buscaPorId(Long id) throws Exception {
-        var beneficiario =  beneficiarioRepository.findById(id);
+    public Beneficiario buscaPorId(String cnpj) throws Exception {
+        var beneficiario =  beneficiarioRepository.findById(cnpj);
 
         if (beneficiario.isEmpty()) {
             throw new Exception("Beneficiario não foi encontrado");
         }
         return beneficiario.get();
     }
+
+    public Beneficiario alterarNome(String cnpj, String nome) throws Exception {
+        Beneficiario beneficiario = buscaPorId(cnpj);
+        beneficiario.setNome(nome);
+        beneficiarioRepository.save(beneficiario);
+        return beneficiario;
+    }
+
+    public String delete(String id) throws Exception {
+        beneficiarioRepository.deleteById(buscaPorId(id).getCnpj());
+        return "Beneficiario deletado";
+    }
+
+
 }

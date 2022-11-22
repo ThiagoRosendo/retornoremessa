@@ -5,6 +5,8 @@ import br.com.bra.retornoremessa.entity.Pagamento;
 import br.com.bra.retornoremessa.repository.PagamentoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PagamentoService {
 
@@ -15,6 +17,10 @@ public class PagamentoService {
     }
     public Pagamento salvar(Pagamento pagamento) {
         return pagamentoRepository.save(pagamento);
+    }
+
+    public List<Pagamento> buscaTodos() {
+        return pagamentoRepository.findAll();
     }
 
     public Pagamento buscaPorId(Long id) throws Exception {

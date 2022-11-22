@@ -17,7 +17,7 @@ public class Pagamento {
     private Long id;
 
     @ManyToOne
-    @JoinColumn (name = "boleto_id", nullable = false)
+    @JoinColumn (name = "nosso_numero", nullable = false)
     private Boleto boleto;
 
     private LocalDateTime data_pagamento;

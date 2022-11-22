@@ -1,5 +1,6 @@
 package br.com.bra.retornoremessa.controller;
 
+import br.com.bra.retornoremessa.entity.Beneficiario;
 import br.com.bra.retornoremessa.entity.Pagador;
 import br.com.bra.retornoremessa.service.PagadorService;
 import org.springframework.http.HttpStatus;
@@ -20,4 +21,11 @@ public class PagadorController {
     public Pagador buscaPorId(@PathVariable(value = "id") Long id) throws Exception {
         return pagadorService.buscaPorId(id);
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Pagador salvar(@RequestBody Pagador pagador) {
+        return pagadorService.salvar(pagador);
+    }
+
 }

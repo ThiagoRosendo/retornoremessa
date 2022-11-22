@@ -1,26 +1,26 @@
 package br.com.bra.retornoremessa.entity;
 
-import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 
 @Entity
 @Getter @Setter
 public class Boleto {
+
+    public Boleto(){}
     @Id
     private Long nosso_numero;
 
-    @OneToOne (mappedBy = "boleto", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Pagador pagador;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn (name = "beneficiario_id", nullable = true)
     private Beneficiario beneficiario;
 
@@ -30,21 +30,26 @@ public class Boleto {
     @OneToMany(mappedBy = "boleto")
     private Set<Historico> historico;
 
-    public Boleto(){}
-
     private String numero_documento;
-    private LocalDateTime data_vencimento;
-    private LocalDateTime data_movimento;
+    private String data_vencimento;
+    private String data_movimento;
     private String valor;
-    private String  linha_digitavel;
 
-    public Boleto(Long nosso_numero, String numero_documento, String valor) {
+    public Boleto(Long nosso_numero, String numero_documento, String valor,
+                  String data_vencimento, String data_movimento, Beneficiario beneficiario) {
         this.nosso_numero = nosso_numero;
         this.numero_documento = numero_documento;
         this.valor = valor;
+        this.data_vencimento = data_vencimento;
+        this.data_movimento = data_movimento;
+        this.beneficiario = beneficiario;
     }
 
     public Long getNosso_numero() {
         return nosso_numero;
+    }
+
+    public void setNumero_documento(String numero_documento) {
+        this.numero_documento = numero_documento;
     }
 }

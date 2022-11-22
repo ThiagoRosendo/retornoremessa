@@ -17,7 +17,26 @@ public class BeneficiarioController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Beneficiario buscaPorId(@PathVariable(value = "id") Long id) throws Exception {
+    public Beneficiario buscaPorId(@PathVariable(value = "id") String id) throws Exception {
         return beneficiarioService.buscaPorId(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Beneficiario salvar(@RequestBody Beneficiario beneficiario) {
+        return beneficiarioService.salvar(beneficiario);
+    }
+
+    @PatchMapping("/{id}/{nome}")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public Beneficiario alteraNome(@PathVariable(value = "id") String cnpj,
+                         @PathVariable(value = "nome") String nome) throws Exception {
+        return beneficiarioService.alterarNome(cnpj, nome);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleta(@PathVariable(value = "id") String id) throws Exception {
+        return beneficiarioService.delete(id);
     }
 }

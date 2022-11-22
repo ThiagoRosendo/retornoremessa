@@ -5,6 +5,11 @@ import br.com.bra.retornoremessa.entity.Boleto;
 import br.com.bra.retornoremessa.repository.BoletoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static javax.xml.bind.DatatypeConverter.parseString;
+
 @Service
 public class BoletoService{
 
@@ -30,4 +35,20 @@ public class BoletoService{
     public String delete(Long id) throws Exception {
         boletoRepository.deleteById(buscaPorId(id).getNosso_numero());
         return "Boleto deletado";
-    }}
+    }
+
+    public String deleteAll()  {
+        boletoRepository.deleteAll();
+        return "Boletos deletados";
+    }
+    public Boleto alterarDataVencimento(Long id, String data_vencimento) throws Exception {
+        Boleto boleto = buscaPorId(id);
+        boleto.setData_vencimento(data_vencimento);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
+        LocalDate dataAtual = LocalDate.now();
+        boleto.setData_movimento(parseString(dtf.format(dataAtual)));
+        boletoRepository.save(boleto);
+        return boleto;
+    }
+
+}

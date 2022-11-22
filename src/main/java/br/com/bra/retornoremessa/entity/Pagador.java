@@ -17,9 +17,9 @@ public class Pagador {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "boleto_id")
+    @JoinColumn(name = "nosso_numero")
     private Boleto boleto;
 
-    private Long conta;
+    private Long conta_produto;
     private Long carteira;
 }
