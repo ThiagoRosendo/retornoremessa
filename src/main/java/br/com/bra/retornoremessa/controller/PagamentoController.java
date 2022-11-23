@@ -1,6 +1,5 @@
 package br.com.bra.retornoremessa.controller;
 
-import br.com.bra.retornoremessa.entity.Beneficiario;
 import br.com.bra.retornoremessa.entity.Pagamento;
 import br.com.bra.retornoremessa.service.PagamentoService;
 import org.springframework.http.HttpStatus;
@@ -34,5 +33,17 @@ public class PagamentoController {
     @ResponseStatus(HttpStatus.OK)
     public List<Pagamento> consultaTodos() {
         return pagamentoService.buscaTodos();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String delete(@PathVariable(value = "id") Long id) throws Exception {
+        return pagamentoService.delete(id);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleteAll() throws Exception {
+        return pagamentoService.deleteAll();
     }
 }

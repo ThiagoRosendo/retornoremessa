@@ -13,13 +13,19 @@ import java.time.LocalDateTime;
 public class Pagamento {
     public Pagamento(){}
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn (name = "nosso_numero", nullable = false)
     private Boleto boleto;
 
-    private LocalDateTime data_pagamento;
-    private BigDecimal valor;
+    private String data_pagamento;
+    private String valor;
+
+    public Pagamento(Boleto boleto, String data_pagamento, String valor) {
+        this.boleto = boleto;
+        this.data_pagamento = data_pagamento;
+        this.valor = valor;
+    }
 }

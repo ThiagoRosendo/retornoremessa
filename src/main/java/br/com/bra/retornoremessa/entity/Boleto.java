@@ -14,7 +14,7 @@ public class Boleto {
 
     public Boleto(){}
     @Id
-    private Long nosso_numero;
+    private String nosso_numero;
 
     @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -27,7 +27,7 @@ public class Boleto {
     @OneToMany(mappedBy = "boleto")
     private Set<Pagamento> pagamento;
 
-    @OneToMany(mappedBy = "boleto")
+    @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL)
     private Set<Historico> historico;
 
     private String numero_documento;
@@ -35,7 +35,7 @@ public class Boleto {
     private String data_movimento;
     private String valor;
 
-    public Boleto(Long nosso_numero, String numero_documento, String valor,
+    public Boleto(String nosso_numero, String numero_documento, String valor,
                   String data_vencimento, String data_movimento, Beneficiario beneficiario) {
         this.nosso_numero = nosso_numero;
         this.numero_documento = numero_documento;
@@ -43,13 +43,5 @@ public class Boleto {
         this.data_vencimento = data_vencimento;
         this.data_movimento = data_movimento;
         this.beneficiario = beneficiario;
-    }
-
-    public Long getNosso_numero() {
-        return nosso_numero;
-    }
-
-    public void setNumero_documento(String numero_documento) {
-        this.numero_documento = numero_documento;
     }
 }

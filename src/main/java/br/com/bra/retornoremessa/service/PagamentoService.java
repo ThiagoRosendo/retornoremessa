@@ -31,4 +31,14 @@ public class PagamentoService {
         }
         return pagamento.get();
     }
+
+    public String delete(Long id) throws Exception {
+        pagamentoRepository.deleteById(buscaPorId(id).getId());
+        return "Pagamento deletado";
+    }
+
+    public String deleteAll()  {
+        pagamentoRepository.deleteAll();
+        return "Pagamentos deletados";
+    }
 }

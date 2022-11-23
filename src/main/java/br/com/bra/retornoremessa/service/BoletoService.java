@@ -23,7 +23,7 @@ public class BoletoService{
         return boletoRepository.save(boleto);
     }
 
-    public Boleto buscaPorId(Long id) throws Exception {
+    public Boleto buscaPorId(String id) throws Exception {
         var boleto =  boletoRepository.findById(id);
 
         if (boleto.isEmpty()) {
@@ -32,7 +32,7 @@ public class BoletoService{
         return boleto.get();
     }
 
-    public String delete(Long id) throws Exception {
+    public String delete(String id) throws Exception {
         boletoRepository.deleteById(buscaPorId(id).getNosso_numero());
         return "Boleto deletado";
     }
@@ -41,7 +41,7 @@ public class BoletoService{
         boletoRepository.deleteAll();
         return "Boletos deletados";
     }
-    public Boleto alterarDataVencimento(Long id, String data_vencimento) throws Exception {
+    public Boleto alterarDataVencimento(String id, String data_vencimento) throws Exception {
         Boleto boleto = buscaPorId(id);
         boleto.setData_vencimento(data_vencimento);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");

@@ -25,4 +25,14 @@ private final PagadorRepository pagadorRepository;
         }
         return pagador.get();
     }
+
+    public String delete(Long id) throws Exception {
+        pagadorRepository.deleteById(buscaPorId(id).getId());
+        return "Pagador deletado";
+    }
+
+    public String deleteAll()  {
+        pagadorRepository.deleteAll();
+        return "Pagadores deletados";
+    }
 }

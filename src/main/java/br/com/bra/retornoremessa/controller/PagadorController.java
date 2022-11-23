@@ -28,4 +28,16 @@ public class PagadorController {
         return pagadorService.salvar(pagador);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String delete(@PathVariable(value = "id") Long id) throws Exception {
+        return pagadorService.delete(id);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleteAll() throws Exception {
+        return pagadorService.deleteAll();
+    }
+
 }
