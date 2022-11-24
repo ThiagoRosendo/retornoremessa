@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -16,27 +20,27 @@ public class Boleto {
     @Id
     private String nosso_numero;
 
-    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private Pagador pagador;
+    private Set<Pagador> pagador;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn (name = "beneficiario_id", nullable = true)
     private Beneficiario beneficiario;
 
-    @OneToMany(mappedBy = "boleto")
-    private Set<Pagamento> pagamento;
+    @OneToOne(mappedBy = "boleto")
+    private Pagamento pagamento;
 
-    @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL)
-    private Set<Historico> historico;
+    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
+    private Historico historico;
 
     private String numero_documento;
-    private String data_vencimento;
-    private String data_movimento;
-    private String valor;
+    private LocalDate data_vencimento;
+    private LocalDate data_movimento;
+    private BigDecimal valor;
 
-    public Boleto(String nosso_numero, String numero_documento, String valor,
-                  String data_vencimento, String data_movimento, Beneficiario beneficiario) {
+    public Boleto(String nosso_numero, String numero_documento, BigDecimal valor,
+                  LocalDate data_vencimento, LocalDate data_movimento, Beneficiario beneficiario) {
         this.nosso_numero = nosso_numero;
         this.numero_documento = numero_documento;
         this.valor = valor;

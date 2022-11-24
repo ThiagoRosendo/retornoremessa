@@ -5,6 +5,8 @@ import br.com.bra.retornoremessa.entity.Boleto;
 import br.com.bra.retornoremessa.repository.BeneficiarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BeneficiarioService{
 

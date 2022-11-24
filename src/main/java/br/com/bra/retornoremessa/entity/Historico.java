@@ -26,7 +26,7 @@ public class Historico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn (name = "boleto_id", nullable = false)
     private Boleto boleto;
 

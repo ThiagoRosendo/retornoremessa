@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 
 import static javax.xml.bind.DatatypeConverter.parseString;
 
@@ -41,14 +43,17 @@ public class BoletoService{
         boletoRepository.deleteAll();
         return "Boletos deletados";
     }
-    public Boleto alterarDataVencimento(String id, String data_vencimento) throws Exception {
+    public Boleto alterarDataVencimento(String id, LocalDate data_vencimento) throws Exception {
         Boleto boleto = buscaPorId(id);
         boleto.setData_vencimento(data_vencimento);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
         LocalDate dataAtual = LocalDate.now();
-        boleto.setData_movimento(parseString(dtf.format(dataAtual)));
+        boleto.setData_movimento(dataAtual);
         boletoRepository.save(boleto);
         return boleto;
+    }
+
+    public List<Boleto> buscaTodos(){
+        return boletoRepository.findAll();
     }
 
 }

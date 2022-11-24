@@ -1,19 +1,27 @@
 package br.com.bra.retornoremessa.controller;
 
 import br.com.bra.retornoremessa.entity.*;
+import br.com.bra.retornoremessa.pdf.BoletoPDF;
 import br.com.bra.retornoremessa.service.BoletoService;
 import br.com.bra.retornoremessa.service.HistoricoService;
 import br.com.bra.retornoremessa.service.PagadorService;
 import br.com.bra.retornoremessa.service.PagamentoService;
+import br.com.bra.retornoremessa.status.StatusBoleto;
+import com.lowagie.text.DocumentException;
+import net.bytebuddy.asm.Advice;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.text.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 @RestController
@@ -23,6 +31,11 @@ public class BoletoController {
     private final HistoricoService historicoService;
     private final PagamentoService pagamentoService;
     private final PagadorService pagadorService;
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
+    DecimalFormat format = new DecimalFormat("###,###.00");
+
 
     public BoletoController(BoletoService boletoService, HistoricoService historicoService,
                             PagamentoService pagamentoService, PagadorService pagadorService) {
@@ -40,7 +53,7 @@ public class BoletoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String salvar(@RequestParam("file") MultipartFile file) throws IOException {
+    public String salvar(@RequestParam("file") MultipartFile file) throws IOException, ParseException {
         List<String> data = new ArrayList<>();
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             data = reader.lines().toList();
@@ -64,32 +77,42 @@ public class BoletoController {
                 //DADOS DO BOLETO
                 String nossoNum = linha.substring(71, 81);
                 String numDoc = linha.substring(116, 126);
-                String valor = linha.substring(152, 165);
-                String dataVencimento = linha.substring(146,152);
-                String dataMovimento = linha.substring(110,116);
+                String valorString = linha.substring(152, 165);
+                BigDecimal valor = new BigDecimal(valorString).divide(new BigDecimal(100));
+                LocalDate dataVencimento = LocalDate.parse(linha.substring(146,152), dtf);
+                LocalDate dataMovimento = LocalDate.parse(linha.substring(110,116), dtf);
+
                 Boleto boleto = new Boleto(nossoNum, numDoc, valor, dataVencimento, dataMovimento, beneficiario);
                 boletoService.salvar(boleto);
 
                 //DADOS DO HISTORICO
 
-                String status = linha.substring(2, 3);
-                String dataPagamento = linha.substring(0, 1);
+                String status = linha.substring(108, 110);
+                String descricao = StatusBoleto.status(status);
 
-                Historico historico = new Historico (boleto, "1","Pago","111122");
+                Historico historico = new Historico (boleto, status, descricao,"111122");
                 historicoService.salvar(historico);
 
 
                 //DADOS DE PAGAMENTO
 
-                String valorPagamento = linha.substring(11, 20);
+                String valorPagamentoString = linha.substring(253, 266);
+                BigDecimal valorPagamento = new BigDecimal(valorPagamentoString).divide(new BigDecimal(100));
+                String dataPagamentoString = linha.substring(295, 301);
+                LocalDate dataPagamento;
+                if ("      ".equals(dataPagamentoString)){
+                    dataPagamento = null;
+                }else {
+                    dataPagamento = LocalDate.parse(linha.substring(295, 301), dtf);
+                }
 
-                Pagamento pagamento = new Pagamento(boleto, "110122", "10099");
+                Pagamento pagamento = new Pagamento(boleto, dataPagamento, valorPagamento);
                 pagamentoService.salvar(pagamento);
 
                 //DADOS PAGADOR
 
                 Pagador pagador = new Pagador(boleto, 1L, 2L);
-                pagadorService.salvar(pagador);
+                //pagadorService.salvar(pagador);
 
             }
         }
@@ -111,7 +134,24 @@ public class BoletoController {
     @PatchMapping("/{id}/vencimento/{dataVencimento}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
     public Boleto alteraVencimento(@PathVariable(value = "id") String id,
-                        @PathVariable(value = "dataVencimento") String dataVencimento) throws Exception {
+                        @PathVariable(value = "dataVencimento") LocalDate dataVencimento) throws Exception {
         return boletoService.alterarDataVencimento(id, dataVencimento);
     }
+
+//    @GetMapping("/pdf")
+//     public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+//        response.setContentType("application/pdf");
+//        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+//        String currentDateTime = dateFormatter.format(new Date());
+//
+//        String headerKey = "Content-Disposition";
+//        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+//        response.setHeader(headerKey, headerValue);
+//
+//        List<Boleto> listaBoleto = boletoService.buscaTodos();
+//
+//        BoletoPDF exporter = new BoletoPDF(listaBoleto);
+//        exporter.export(response);
+//
+//    }
 }
