@@ -18,6 +18,8 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -79,19 +81,22 @@ public class BoletoPDF {
         Font font = FontFactory.getFont(FontFactory.HELVETICA);
         font.setSize(8);
 
+        int cont = 1;
 
         for (Boleto boleto : listaBoletos) {
+            if (cont % 2 == 0){ cell.setBackgroundColor(Color.LIGHT_GRAY);}
+            else { cell.setBackgroundColor(Color.WHITE);}
 
-            cell.setPhrase(new Phrase(boleto.getNosso_numero(), font));
+            cell.setPhrase(new Phrase(boleto.getNossoNumero(), font));
             table.addCell(cell);
 
-            cell.setPhrase(new Phrase(boleto.getNumero_documento(), font));
+            cell.setPhrase(new Phrase(boleto.getNumeroDocumento(), font));
             table.addCell(cell);
 
-            cell.setPhrase(new Phrase(dataFormat.format(boleto.getData_movimento()), font));
+            cell.setPhrase(new Phrase(dataFormat.format(boleto.getDataMovimento()), font));
             table.addCell(cell);
 
-            cell.setPhrase(new Phrase(dataFormat.format(boleto.getData_vencimento()), font));
+            cell.setPhrase(new Phrase(dataFormat.format(boleto.getDataVencimento()), font));
             table.addCell(cell);
 
 
@@ -111,6 +116,8 @@ public class BoletoPDF {
 
             cell.setPhrase(new Phrase(boleto.getHistorico().getDescricao(), font));
             table.addCell(cell);
+
+            cont++;
         }
     }
      

@@ -18,7 +18,7 @@ public class Boleto {
 
     public Boleto(){}
     @Id
-    private String nosso_numero;
+    private String nossoNumero;
 
     @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -28,24 +28,24 @@ public class Boleto {
     @JoinColumn (name = "beneficiario_id", nullable = true)
     private Beneficiario beneficiario;
 
-    @OneToOne(mappedBy = "boleto")
+    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
     private Pagamento pagamento;
 
     @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
     private Historico historico;
 
-    private String numero_documento;
-    private LocalDate data_vencimento;
-    private LocalDate data_movimento;
+    private String numeroDocumento;
+    private LocalDate dataVencimento;
+    private LocalDate dataMovimento;
     private BigDecimal valor;
 
-    public Boleto(String nosso_numero, String numero_documento, BigDecimal valor,
-                  LocalDate data_vencimento, LocalDate data_movimento, Beneficiario beneficiario) {
-        this.nosso_numero = nosso_numero;
-        this.numero_documento = numero_documento;
+    public Boleto(String nossoNumero, String numeroDocumento, BigDecimal valor,
+                  LocalDate dataVencimento, LocalDate dataMovimento, Beneficiario beneficiario) {
+        this.nossoNumero = nossoNumero;
+        this.numeroDocumento = numeroDocumento;
         this.valor = valor;
-        this.data_vencimento = data_vencimento;
-        this.data_movimento = data_movimento;
+        this.dataVencimento = dataVencimento;
+        this.dataMovimento = dataMovimento;
         this.beneficiario = beneficiario;
     }
 }

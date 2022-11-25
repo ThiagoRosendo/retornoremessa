@@ -5,6 +5,7 @@ import br.com.bra.retornoremessa.entity.Boleto;
 import br.com.bra.retornoremessa.entity.Historico;
 import br.com.bra.retornoremessa.repository.BeneficiarioRepository;
 import br.com.bra.retornoremessa.repository.HistoricoRepository;
+import br.com.bra.retornoremessa.status.StatusBoleto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class HistoricoService {
     public Historico alteraStatus(Long id, String status) throws Exception {
         Historico historico = buscaPorId(id);
         historico.setStatus(status);
-        historico.setDescricao("teste");
+        historico.setDescricao(StatusBoleto.status(status));
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
         LocalDate dataAtual = LocalDate.now();
         historico.setData(parseString(dtf.format(dataAtual)));

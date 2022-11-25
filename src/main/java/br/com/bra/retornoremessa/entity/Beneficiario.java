@@ -1,10 +1,13 @@
 package br.com.bra.retornoremessa.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 @Entity

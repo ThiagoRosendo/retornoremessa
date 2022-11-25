@@ -23,11 +23,13 @@ public class PagamentoController {
         return pagamentoService.buscaPorId(id);
     }
 
+    // CREATE PAGAMENTO
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Pagamento salvar(@RequestBody Pagamento pagamento) {
         return pagamentoService.salvar(pagamento);
     }
+
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

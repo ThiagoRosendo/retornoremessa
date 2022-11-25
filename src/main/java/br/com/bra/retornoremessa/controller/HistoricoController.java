@@ -18,7 +18,7 @@ public class HistoricoController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Historico buscaPorId(@PathVariable(value = "id") Long id) throws Exception {
+    public Historico getBoleto(@PathVariable(value = "id") Long id) throws Exception {
         return historicoService.buscaPorId(id);
     }
 

@@ -1,18 +1,10 @@
 package br.com.bra.retornoremessa.controller;
 
 import br.com.bra.retornoremessa.entity.Beneficiario;
-import br.com.bra.retornoremessa.entity.Boleto;
-import br.com.bra.retornoremessa.pdf.BoletoPDF;
 import br.com.bra.retornoremessa.service.BeneficiarioService;
-import com.lowagie.text.DocumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
@@ -25,46 +17,44 @@ public class BeneficiarioController {
         this.beneficiarioService = beneficiarioService;
     }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Beneficiario buscaPorId(@PathVariable(value = "id") String id) throws Exception {
-        return beneficiarioService.buscaPorId(id);
-    }
-
+    // CREATE BENEFICIARIO
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Beneficiario salvar(@RequestBody Beneficiario beneficiario) {
         return beneficiarioService.salvar(beneficiario);
     }
 
-    @PatchMapping("/{id}/{nome}")
+    // READ BENEFICIARIO
+    @GetMapping("/{cnpj}")
+    @ResponseStatus(HttpStatus.OK)
+    public Beneficiario getBeneficiario(@PathVariable(value = "cnpj") String cnpj) throws Exception {
+        return beneficiarioService.getBeneficiario(cnpj);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Beneficiario> getAllBeneficiarios() throws Exception {
+        return beneficiarioService.getAllBeneficiarios();
+    }
+
+    // UPDATE BENEFICIARIO
+    @PatchMapping("/{cnpj}/{nome}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
-    public Beneficiario alteraNome(@PathVariable(value = "id") String cnpj,
-                         @PathVariable(value = "nome") String nome) throws Exception {
+    public Beneficiario alteraNome(@PathVariable(value = "cnpj") String cnpj,
+                                   @PathVariable(value = "nome") String nome) throws Exception {
         return beneficiarioService.alterarNome(cnpj, nome);
     }
 
-    @DeleteMapping("/{id}")
+    // DELETE BENEFICIARIO
+    @DeleteMapping("/{cnpj}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleta(@PathVariable(value = "id") String id) throws Exception {
-        return beneficiarioService.delete(id);
+    public String deleta(@PathVariable(value = "cnpj") String cnpj) throws Exception {
+        return beneficiarioService.delete(cnpj);
     }
 
-    @GetMapping("/{id}/pdf")
-    public void exportToPDF(HttpServletResponse response,
-                            @PathVariable(value = "id") String id) throws Exception {
-        response.setContentType("application/pdf");
-        DateFormat dateFormatter = new SimpleDateFormat("dd-yyyy HH:mm:ss");
-        String currentDateTime = dateFormatter.format(new Date());
-
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Relatorio_Retorno - " + currentDateTime + ".pdf";
-        response.setHeader(headerKey, headerValue);
-
-        Beneficiario beneficiario = beneficiarioService.buscaPorId(id);
-
-        BoletoPDF exporter = new BoletoPDF(beneficiario);
-        exporter.export(response);
-
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleta() throws Exception {
+        return beneficiarioService.deleteAll();
     }
 }
