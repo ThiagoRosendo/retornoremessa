@@ -1,11 +1,11 @@
 package br.com.bra.retornoremessa.controller;
 
 import br.com.bra.retornoremessa.entity.Boleto;
+import br.com.bra.retornoremessa.entity.Pagamento;
 import br.com.bra.retornoremessa.service.BoletoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -17,6 +17,14 @@ public class BoletoController {
     public BoletoController(BoletoService boletoService) {
         this.boletoService = boletoService;
     }
+
+    // CREATE BOLETO
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Boleto salvar(@RequestBody Boleto boleto) {
+        return boletoService.salvar(boleto);
+    }
+
 
     // READ BOLETO
     @GetMapping("/{nosso-numero}")
@@ -32,11 +40,18 @@ public class BoletoController {
     }
 
     // UPDATE BOLETO
-    @PatchMapping("/{nosso-numero}/vencimento/{dataVencimento}")
+    @PatchMapping("/{nossoNumero}/vencimento/{dataVencimento}")
     @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
-    public Boleto alterarVencimento(@PathVariable(value = "nosso-numero") String nosso_numero,
-                                   @PathVariable(value = "dataVencimento") LocalDate dataVencimento) throws Exception {
-        return boletoService.alterarDataVencimento(nosso_numero, dataVencimento);
+    public Boleto alterarVencimento(@PathVariable(value = "nossoNumero") String nossoNumero,
+                                   @PathVariable(value = "dataVencimento") String dataVencimento) throws Exception {
+        return boletoService.alterarDataVencimento(nossoNumero, dataVencimento);
+    }
+
+    @PatchMapping("/{nossoNumero}/valor/{valor}")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public Boleto alterarValor(@PathVariable(value = "nossoNumero") String nossoNumero,
+                                    @PathVariable(value = "valor") String valor) throws Exception {
+        return boletoService.alterarValor(nossoNumero, valor);
     }
 
     // DELETE BOLETO

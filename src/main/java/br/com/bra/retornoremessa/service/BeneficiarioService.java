@@ -1,7 +1,6 @@
 package br.com.bra.retornoremessa.service;
 
 import br.com.bra.retornoremessa.entity.Beneficiario;
-import br.com.bra.retornoremessa.entity.Boleto;
 import br.com.bra.retornoremessa.repository.BeneficiarioRepository;
 import org.springframework.stereotype.Service;
 

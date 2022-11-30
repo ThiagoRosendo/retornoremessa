@@ -1,5 +1,6 @@
 package br.com.bra.retornoremessa.controller;
 
+import br.com.bra.retornoremessa.entity.Boleto;
 import br.com.bra.retornoremessa.entity.Pagamento;
 import br.com.bra.retornoremessa.service.PagamentoService;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,6 @@ public class PagamentoController {
         this.pagamentoService = pagamentoService;
     }
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Pagamento buscaPorId(@PathVariable(value = "id") Long id) throws Exception {
-        return pagamentoService.buscaPorId(id);
-    }
-
     // CREATE PAGAMENTO
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -30,13 +25,29 @@ public class PagamentoController {
         return pagamentoService.salvar(pagamento);
     }
 
+    // READ PAGAMENTO
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Pagamento getPagamento(@PathVariable(value = "id") Long id) throws Exception {
+        return pagamentoService.getPagamento(id);
+    }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Pagamento> consultaTodos() {
-        return pagamentoService.buscaTodos();
+    public List<Pagamento> getAllPagamentos() {
+        return pagamentoService.getAllPagamentos();
     }
 
+    // UPDATE PAGAMENTO
+
+    @PatchMapping("/{id}/valor/{valor}")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public Pagamento alterarValor(@PathVariable(value = "id") Long id,
+                                    @PathVariable(value = "valor") String valor) throws Exception {
+        return pagamentoService.alterarValorPgto(id, valor);
+    }
+
+    // DELETE PAGAMENTO
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public String delete(@PathVariable(value = "id") Long id) throws Exception {

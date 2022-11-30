@@ -1,8 +1,9 @@
 package br.com.bra.retornoremessa.controller;
 
-import br.com.bra.retornoremessa.entity.Beneficiario;
-import br.com.bra.retornoremessa.pdf.BoletoPDF;
+import br.com.bra.retornoremessa.entity.Remessa;
+import br.com.bra.retornoremessa.pdf.RemessaToPDF;
 import br.com.bra.retornoremessa.service.BeneficiarioService;
+import br.com.bra.retornoremessa.service.RemessaService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +19,16 @@ import java.util.Date;
 public class RelatorioController {
 
     private final BeneficiarioService beneficiarioService;
+    private final RemessaService remessaService;
 
-    public RelatorioController(BeneficiarioService beneficiarioService) {
+    public RelatorioController(BeneficiarioService beneficiarioService, RemessaService remessaService) {
         this.beneficiarioService = beneficiarioService;
+        this.remessaService = remessaService;
     }
 
-    @GetMapping("/beneficiario/{cnpj}")
+    @GetMapping("/remessa/{id}")
     public void exportToPDF(HttpServletResponse response,
-                            @PathVariable(value = "cnpj") String cnpj) throws Exception {
+                            @PathVariable(value = "id") Long id) throws Exception {
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("dd-yyyy HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -34,9 +37,9 @@ public class RelatorioController {
         String headerValue = "attachment; filename=Relatorio_Retorno - " + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        Beneficiario beneficiario = beneficiarioService.getBeneficiario(cnpj);
+        Remessa remessa = remessaService.getRemessa(id);
 
-        BoletoPDF exporter = new BoletoPDF(beneficiario);
+        RemessaToPDF exporter = new RemessaToPDF(remessa);
         exporter.export(response);
     }
 }

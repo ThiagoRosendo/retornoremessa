@@ -3,11 +3,8 @@ package br.com.bra.retornoremessa.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.LinkedHashMap;
+import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -20,8 +17,13 @@ public class Beneficiario {
     @Id
     private String cnpj;
 
-    @OneToMany(mappedBy = "beneficiario", cascade = CascadeType.REMOVE)
-    private Set<Boleto> boletos;
+    @OneToMany(mappedBy = "beneficiario", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OrderBy("nossoNumero")
+    private Set<Boleto> boletos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "beneficiario", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OrderBy("id")
+    private Set<Remessa> remessas = new LinkedHashSet<>();
 
     private String nome;
     private Long agencia;

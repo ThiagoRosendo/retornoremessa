@@ -15,6 +15,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,18 +29,25 @@ public class RemessaController {
     private final HistoricoService historicoService;
     private final PagamentoService pagamentoService;
 
+    private final RemessaService remessaService;
+    private final BeneficiarioService beneficiarioService;
+
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
     DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
     DecimalFormat format = new DecimalFormat("###,###.00");
 
 
     public RemessaController(BoletoService boletoService, HistoricoService historicoService,
-                            PagamentoService pagamentoService, PagadorService pagadorService, BeneficiarioService beneficiarioService) {
+                             PagamentoService pagamentoService, BeneficiarioService beneficiarioService,
+                             RemessaService remessaService) {
         this.boletoService = boletoService;
         this.historicoService = historicoService;
         this.pagamentoService = pagamentoService;
+        this.remessaService = remessaService;
+        this.beneficiarioService = beneficiarioService;
     }
 
+    // CREATE REMESSA
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String salvar(@RequestParam("file") MultipartFile file) throws IOException, ParseException {
@@ -59,12 +67,16 @@ public class RemessaController {
             Long conta = Long.parseLong(linha2.substring(30, 37));
             String nome = linha1.substring(47, 76);
 
+            LocalDateTime dataCriacao = LocalDateTime.now();
+
             Beneficiario beneficiario = new Beneficiario(cnpj, nome, agencia, conta, carteira, contrato);
+            Remessa remessa = new Remessa(beneficiario);
+            beneficiarioService.salvar(beneficiario);
+            remessaService.salvar(remessa);
 
             for (String linha : data.subList(1, data.size() - 1)) {
-                System.out.println(linha);
 
-                //DADOS DO BOLETO
+                // DADOS DO BOLETO
                 String nossoNum = linha.substring(71, 81);
                 String numDoc = linha.substring(116, 126);
                 String valorString = linha.substring(152, 165);
@@ -72,19 +84,21 @@ public class RemessaController {
                 LocalDate dataVencimento = LocalDate.parse(linha.substring(146,152), dtf);
                 LocalDate dataMovimento = LocalDate.parse(linha.substring(110,116), dtf);
 
-                Boleto boleto = new Boleto(nossoNum, numDoc, valor, dataVencimento, dataMovimento, beneficiario);
+                Boleto boleto = new Boleto(nossoNum, numDoc, valor, dataVencimento,
+                                           dataMovimento, beneficiario, remessa);
                 boletoService.salvar(boleto);
 
-                //DADOS DO HISTORICO
+                // DADOS DO HISTORICO
 
                 String status = linha.substring(108, 110);
                 String descricao = StatusBoleto.status(status);
+                LocalDate dataAtual = LocalDate.now();
 
-                Historico historico = new Historico (boleto, status, descricao,"111122");
+                Historico historico = new Historico (boleto, status, descricao, dataAtual);
                 historicoService.salvar(historico);
 
 
-                //DADOS DE PAGAMENTO
+                // DADOS DE PAGAMENTO
 
                 String valorPagamentoString = linha.substring(253, 266);
                 BigDecimal valorPagamento = new BigDecimal(valorPagamentoString).divide(new BigDecimal(100));
@@ -98,14 +112,36 @@ public class RemessaController {
 
                 Pagamento pagamento = new Pagamento(boleto, dataPagamento, valorPagamento);
                 pagamentoService.salvar(pagamento);
-
-                //DADOS PAGADOR
-
-                Pagador pagador = new Pagador(boleto, 1L, 2L);
-                //pagadorService.salvar(pagador);
-
             }
         }
         return "success";
     }
+
+    // READ REMESSA
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Remessa getRemessa(@PathVariable(value = "id") Long id) throws Exception {
+        return remessaService.getRemessa(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Remessa> getAllRemessas() {
+        return remessaService.getAllRemessas();
+    }
+
+
+    // DELETE REMESSA
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String delete(@PathVariable(value = "id") Long id) throws Exception {
+        return remessaService.delete(id);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public String deleteAll() throws Exception {
+        return remessaService.deleteAll();
+    }
+
 }

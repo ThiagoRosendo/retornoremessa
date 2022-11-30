@@ -48,13 +48,13 @@ public class BeneficiarioController {
     // DELETE BENEFICIARIO
     @DeleteMapping("/{cnpj}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleta(@PathVariable(value = "cnpj") String cnpj) throws Exception {
+    public String delete(@PathVariable(value = "cnpj") String cnpj) throws Exception {
         return beneficiarioService.delete(cnpj);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleta() throws Exception {
+    public String deleteAll() throws Exception {
         return beneficiarioService.deleteAll();
     }
 }

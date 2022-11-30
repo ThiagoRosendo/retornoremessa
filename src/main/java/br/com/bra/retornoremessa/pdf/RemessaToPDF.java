@@ -2,9 +2,10 @@ package br.com.bra.retornoremessa.pdf;
 
 import br.com.bra.retornoremessa.entity.Beneficiario;
 import br.com.bra.retornoremessa.entity.Boleto;
+import br.com.bra.retornoremessa.entity.Remessa;
 import com.lowagie.text.Font;
-import com.lowagie.text.*;
 import com.lowagie.text.Image;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
@@ -14,51 +15,50 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class BoletoPDF {
-    private Set<Boleto> listaBoletos;
-    private Beneficiario beneficiario;
-    private
+public class RemessaToPDF {
+    private final Set<Boleto> listaBoletos;
+    private final Beneficiario beneficiario;
 
     DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter dataHoraFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
+
     Locale brasil = new Locale("pt", "BR");
     NumberFormat format = NumberFormat.getCurrencyInstance(brasil);
 
-    public BoletoPDF(Beneficiario beneficiario) {
-        this.listaBoletos = beneficiario.getBoletos();
-        this.beneficiario = beneficiario;
+    public RemessaToPDF(Remessa remessa) {
+        this.listaBoletos = remessa.getBoletos();
+        this.beneficiario = remessa.getBeneficiario();
     }
 
-            private void writeTableHeader(PdfPTable table) {
+    private void writeTableHeader(PdfPTable table) {
 
         PdfPCell cell = new PdfPCell();
         cell.setBackgroundColor(Color.RED);
         cell.setPadding(5);
-         
+
         Font font = FontFactory.getFont(FontFactory.HELVETICA);
         font.setColor(Color.WHITE);
         font.setSize(9);
 
         cell.setPhrase(new Phrase("Nosso Número", font));
         table.addCell(cell);
-         
+
         cell.setPhrase(new Phrase("Número Docto", font));
         table.addCell(cell);
-         
+
         cell.setPhrase(new Phrase("Movimento", font));
         table.addCell(cell);
-         
+
         cell.setPhrase(new Phrase("Vencimento", font));
         table.addCell(cell);
-         
+
         cell.setPhrase(new Phrase("Pagamento", font));
         table.addCell(cell);
 
@@ -71,7 +71,7 @@ public class BoletoPDF {
         cell.setPhrase(new Phrase("Status", font));
         table.addCell(cell);
 
-            }
+    }
 
     private void writeTableData(PdfPTable table) {
 
@@ -120,8 +120,8 @@ public class BoletoPDF {
             cont++;
         }
     }
-     
-            public void export(HttpServletResponse response) throws DocumentException, IOException, ParseException {
+
+    public void export(HttpServletResponse response) throws DocumentException, IOException, ParseException {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
 
@@ -138,10 +138,11 @@ public class BoletoPDF {
 
         Paragraph header = new Paragraph("Relatório de Retorno de Remessa", fontHeader);
 
-        Paragraph razao = new Paragraph("Razão Social: " + beneficiario.getNome()   , fontBody);
+        Paragraph razao = new Paragraph("Razão Social: " + beneficiario.getNome(), fontBody);
         Paragraph cnpjHeader = new Paragraph("CNPJ: " + cnpj, fontBody);
         Paragraph agConta = new Paragraph("Agência: " + beneficiario.getAgencia().toString() +
                 " | Conta: " + beneficiario.getConta().toString(), fontBody);
+        Paragraph data = new Paragraph("Emitido em: " + dataHoraFormat.format(LocalDateTime.now()));
 
 
         Image img = Image.getInstance("src/main/resources/bradesco-logo.png");
@@ -153,18 +154,19 @@ public class BoletoPDF {
         document.add(razao);
         document.add(cnpjHeader);
         document.add(agConta);
-         
+
         PdfPTable table = new PdfPTable(8);
         table.setWidthPercentage(100f);
         table.setWidths(new float[] {1.4f, 1.4f, 1.5f, 1.5f, 1.5f, 2f, 2f, 1.5f});
         table.setSpacingBefore(10);
-         
+
         writeTableHeader(table);
         writeTableData(table);
-         
+
         document.add(table);
-         
+        document.add(data);
+
         document.close();
-         
+
     }
 }

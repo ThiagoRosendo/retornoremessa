@@ -6,10 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Set;
 
 
 @Entity
@@ -20,18 +17,18 @@ public class Boleto {
     @Id
     private String nossoNumero;
 
-    @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Set<Pagador> pagador;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn (name = "beneficiario_id", nullable = true)
     private Beneficiario beneficiario;
 
-    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
+    @ManyToOne (cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn (name = "remessa_id", nullable = true)
+    private Remessa remessa;
+
+    @OneToOne(mappedBy = "boleto", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private Pagamento pagamento;
 
-    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "boleto", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private Historico historico;
 
     private String numeroDocumento;
@@ -40,12 +37,14 @@ public class Boleto {
     private BigDecimal valor;
 
     public Boleto(String nossoNumero, String numeroDocumento, BigDecimal valor,
-                  LocalDate dataVencimento, LocalDate dataMovimento, Beneficiario beneficiario) {
+                  LocalDate dataVencimento, LocalDate dataMovimento, Beneficiario beneficiario,
+                  Remessa remessa) {
         this.nossoNumero = nossoNumero;
         this.numeroDocumento = numeroDocumento;
         this.valor = valor;
         this.dataVencimento = dataVencimento;
         this.dataMovimento = dataMovimento;
         this.beneficiario = beneficiario;
+        this.remessa = remessa;
     }
 }

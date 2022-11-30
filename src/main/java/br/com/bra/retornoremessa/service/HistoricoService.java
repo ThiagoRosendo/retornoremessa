@@ -1,17 +1,13 @@
 package br.com.bra.retornoremessa.service;
 
-import br.com.bra.retornoremessa.entity.Beneficiario;
-import br.com.bra.retornoremessa.entity.Boleto;
 import br.com.bra.retornoremessa.entity.Historico;
-import br.com.bra.retornoremessa.repository.BeneficiarioRepository;
+import br.com.bra.retornoremessa.entity.Remessa;
 import br.com.bra.retornoremessa.repository.HistoricoRepository;
 import br.com.bra.retornoremessa.status.StatusBoleto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import static javax.xml.bind.DatatypeConverter.parseString;
+import java.util.List;
 
 @Service
 public class HistoricoService {
@@ -20,11 +16,14 @@ public class HistoricoService {
     public HistoricoService(HistoricoRepository historicoRepository) {
         this.historicoRepository = historicoRepository;
     }
+
+    // CREATE HISTORICO
     public Historico salvar(Historico historico) {
         return historicoRepository.save(historico);
     }
 
-    public Historico buscaPorId(Long id) throws Exception {
+    // READ HISTORICO
+    public Historico getHistorico(Long id) throws Exception {
         var historico =  historicoRepository.findById(id);
 
         if (historico.isEmpty()) {
@@ -33,19 +32,33 @@ public class HistoricoService {
         return historico.get();
     }
 
-    public String delete(Long id) throws Exception {
-        historicoRepository.deleteById(buscaPorId(id).getId());
-        return "Historico deletado";
+    public List<Historico> getAllHistoricos() {
+        return historicoRepository.findAll();
     }
 
+
+    // UPDATE HISTORICO
+
     public Historico alteraStatus(Long id, String status) throws Exception {
-        Historico historico = buscaPorId(id);
+        Historico historico = getHistorico(id);
         historico.setStatus(status);
         historico.setDescricao(StatusBoleto.status(status));
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
         LocalDate dataAtual = LocalDate.now();
-        historico.setData(parseString(dtf.format(dataAtual)));
+        historico.setData(dataAtual);
         historicoRepository.save(historico);
         return historico;
     }
+
+    // DELETE HISTORICO
+    public String delete(Long id) throws Exception {
+        historicoRepository.deleteById(getHistorico(id).getId());
+        return "Historico deletado";
+    }
+
+    public String deleteAll()  {
+        historicoRepository.deleteAll();
+        return "Historicos deletados";
+    }
+
+
 }

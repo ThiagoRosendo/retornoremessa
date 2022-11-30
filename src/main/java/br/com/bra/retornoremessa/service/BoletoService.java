@@ -6,13 +6,17 @@ import br.com.bra.retornoremessa.repository.BoletoRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class BoletoService{
 
     private final BoletoRepository boletoRepository;
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyy");
 
     public BoletoService(BoletoRepository boletoRepository) {
         this.boletoRepository = boletoRepository;
@@ -37,10 +41,19 @@ public class BoletoService{
         return boletoRepository.findAll(Sort.by(Sort.Direction.ASC, "nossoNumero"));
     }
 
-    // UPDATE BOLETO
-    public Boleto alterarDataVencimento(String nossoNumero, LocalDate dataVencimento) throws Exception {
+    // UPDATE BOLETO (FORMATO: DDMMYY)
+    public Boleto alterarDataVencimento(String nossoNumero, String dataVencimento) throws Exception {
         Boleto boleto = getBoleto(nossoNumero);
-        boleto.setDataVencimento(dataVencimento);
+        boleto.setDataVencimento(LocalDate.parse(dataVencimento, dtf));
+        LocalDate dataAtual = LocalDate.now();
+        boleto.setDataMovimento(dataAtual);
+        boletoRepository.save(boleto);
+        return boleto;
+    }
+
+    public Boleto alterarValor(String nossoNumero, String valor) throws Exception {
+        Boleto boleto = getBoleto(nossoNumero);
+        boleto.setValor(new BigDecimal(valor).divide(new BigDecimal(100)));;
         LocalDate dataAtual = LocalDate.now();
         boleto.setDataMovimento(dataAtual);
         boletoRepository.save(boleto);

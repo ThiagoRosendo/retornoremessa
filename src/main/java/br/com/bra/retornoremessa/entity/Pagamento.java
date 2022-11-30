@@ -1,13 +1,11 @@
 package br.com.bra.retornoremessa.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
@@ -17,8 +15,8 @@ public class Pagamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn (name = "nosso_numero", nullable = false)
+    @ManyToOne
+    @JoinColumn (name = "boleto", nullable = false)
     private Boleto boleto;
 
     private LocalDate data_pagamento;
