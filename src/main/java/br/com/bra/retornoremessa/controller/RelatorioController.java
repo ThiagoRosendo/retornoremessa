@@ -30,7 +30,7 @@ public class RelatorioController {
     public void exportToPDF(HttpServletResponse response,
                             @PathVariable(value = "id") Long id) throws Exception {
         response.setContentType("application/pdf");
-        DateFormat dateFormatter = new SimpleDateFormat("dd-yyyy HH:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
