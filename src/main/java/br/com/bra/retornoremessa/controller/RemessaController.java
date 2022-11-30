@@ -67,10 +67,8 @@ public class RemessaController {
             Long conta = Long.parseLong(linha2.substring(30, 37));
             String nome = linha1.substring(47, 76);
 
-            LocalDateTime dataCriacao = LocalDateTime.now();
-
             Beneficiario beneficiario = new Beneficiario(cnpj, nome, agencia, conta, carteira, contrato);
-            Remessa remessa = new Remessa(beneficiario);
+            Remessa remessa = new Remessa(beneficiario, "Remessa " + beneficiario.getCnpj());
             beneficiarioService.salvar(beneficiario);
             remessaService.salvar(remessa);
 
@@ -130,6 +128,13 @@ public class RemessaController {
         return remessaService.getAllRemessas();
     }
 
+    // UPDATE REMESSA
+    @PatchMapping("/{id}/nome/{nome}")
+    @ResponseStatus(HttpStatus.PARTIAL_CONTENT)
+    public Remessa alterarNome(@PathVariable(value = "id") Long id,
+                               @PathVariable(value = "nome") String nome) throws Exception {
+        return remessaService.alterarNome(id, nome);
+    }
 
     // DELETE REMESSA
     @DeleteMapping("/{id}")

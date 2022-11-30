@@ -28,8 +28,11 @@ public class Remessa {
     @JoinColumn (name = "beneficiario_id", nullable = true)
     private Beneficiario beneficiario;
 
-    public Remessa(Beneficiario beneficiario) {
+    private String nome;
+
+    public Remessa(Beneficiario beneficiario, String nome) {
         this.beneficiario = beneficiario;
+        this.nome = nome;
     }
 
 }
